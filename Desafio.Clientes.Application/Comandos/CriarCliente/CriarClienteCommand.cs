@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Desafio.Clientes.Application.Commands.CriarCliente
+namespace Desafio.Clientes.Application.Comandos.CriarCliente
 {
     /// <summary>
     /// Comando para criar cliente — retorna Guid do cliente criado.

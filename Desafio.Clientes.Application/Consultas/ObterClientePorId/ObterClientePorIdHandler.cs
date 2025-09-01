@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Desafio.Clientes.Application.Queries.GetClienteById
+namespace Desafio.Clientes.Application.Consultas.ObterClientePorId
 {
     public class ObterClientePorIdHandler : IRequestHandler<ObterClientePorIdConsulta, ClienteDto?>
     {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Desafio.Clientes.Infrastructure.Repositories
+namespace Desafio.Clientes.Infrastructure.Repositorios
 {
     /// <summary>
     /// Implementação do repositório em memória.

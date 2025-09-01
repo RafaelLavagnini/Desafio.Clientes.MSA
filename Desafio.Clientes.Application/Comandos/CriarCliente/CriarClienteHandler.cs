@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Desafio.Clientes.Application.Commands.CriarCliente
+namespace Desafio.Clientes.Application.Comandos.CriarCliente
 {
     /// <summary>
     /// Manipulador do comando de criação de cliente.
@@ -23,14 +23,14 @@ namespace Desafio.Clientes.Application.Commands.CriarCliente
             _repo = repo;
         }
 
-        public async Task<Guid> Handle(CriarClienteCommand request, CancellationToken tokenDeCancelamento)
+        public async Task<Guid> Handle(CriarClienteCommand solicita, CancellationToken tokenDeCancelamento)
         {
-            var cnpjVo = Cnpj.Criar(request.Cnpj);
+            var cnpj = Cnpj.Criar(solicita.Cnpj);
 
-            if (await _repo.ExisteCnpjAsync(cnpjVo.ToString()))
+            if (await _repo.ExisteCnpjAsync(cnpj.ToString()))
                 throw new ExcecaoDominio("CNPJ já cadastrado.");
 
-            var cliente = Cliente.Criar(request.NomeFantasia, cnpjVo);
+            var cliente = Cliente.Criar(solicita.NomeFantasia, cnpj);
 
             await _repo.AdicionarAsync(cliente);
 
