@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace Desafio.Clientes.Application.Queries.GetClienteById
 {
-    public record GetClienteByIdQuery(Guid Id) : IRequest<ClienteDto?>;
+    public record ObterClientePorIdConsulta(Guid Id) : IRequest<ClienteDto?>;
 }

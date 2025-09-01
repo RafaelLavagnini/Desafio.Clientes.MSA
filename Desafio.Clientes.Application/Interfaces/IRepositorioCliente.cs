@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Desafio.Clientes.Application.Interfaces
 {
-    public interface IClienteRepository
+    public interface IRepositorioCliente
     {
-        Task AddAsync(Cliente cliente);
-        Task<Cliente?> GetByIdAsync(Guid id);
-        Task<bool> ExistsByCnpjAsync(string cnpj);
+        Task AdicionarAsync(Cliente cliente);
+        Task<Cliente?> ObterPorIdAsync(Guid id);
+        Task<bool> ExisteCnpjAsync(string cnpj);
     }
 }

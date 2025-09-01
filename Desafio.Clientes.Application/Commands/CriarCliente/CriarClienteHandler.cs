@@ -9,27 +9,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Desafio.Clientes.Application.Commands.CreateCliente
+namespace Desafio.Clientes.Application.Commands.CriarCliente
 {
-    public class CreateClienteHandler : IRequestHandler<CreateClienteCommand, Guid>
+    /// <summary>
+    /// Manipulador do comando de criação de cliente.
+    /// </summary>
+    public class CriarClienteHandler : IRequestHandler<CriarClienteCommand, Guid>
     {
-        private readonly IClienteRepository _repo;
+        private readonly IRepositorioCliente _repo;
 
-        public CreateClienteHandler(IClienteRepository repo)
+        public CriarClienteHandler(IRepositorioCliente repo)
         {
             _repo = repo;
         }
 
-        public async Task<Guid> Handle(CreateClienteCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CriarClienteCommand request, CancellationToken tokenDeCancelamento)
         {
             var cnpjVo = Cnpj.Criar(request.Cnpj);
 
-            if (await _repo.ExistsByCnpjAsync(cnpjVo.ToString()))
+            if (await _repo.ExisteCnpjAsync(cnpjVo.ToString()))
                 throw new ExcecaoDominio("CNPJ já cadastrado.");
 
             var cliente = Cliente.Criar(request.NomeFantasia, cnpjVo);
 
-            await _repo.AddAsync(cliente);
+            await _repo.AdicionarAsync(cliente);
 
             return cliente.Id;
         }

@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Desafio.Clientes.Application.Queries.GetClienteById
 {
-    public class GetClienteByIdHandler : IRequestHandler<GetClienteByIdQuery, ClienteDto?>
+    public class ObterClientePorIdHandler : IRequestHandler<ObterClientePorIdConsulta, ClienteDto?>
     {
-        private readonly IClienteRepository _repo;
+        private readonly IRepositorioCliente _repositorio;
 
-        public GetClienteByIdHandler(IClienteRepository repo)
+        public ObterClientePorIdHandler(IRepositorioCliente repo)
         {
-            _repo = repo;
+            _repositorio = repo;
         }
 
-        public async Task<ClienteDto?> Handle(GetClienteByIdQuery request, CancellationToken cancellationToken)
+        public async Task<ClienteDto?> Handle(ObterClientePorIdConsulta request, CancellationToken cancellationToken)
         {
-            var cliente = await _repo.GetByIdAsync(request.Id);
+            var cliente = await _repositorio.ObterPorIdAsync(request.Id);
             if (cliente == null) return null;
 
             return new ClienteDto

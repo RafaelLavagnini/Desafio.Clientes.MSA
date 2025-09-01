@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Desafio.Clientes.Infrastructure.Repositories
 {
+    /// <summary>
+    /// Implementação do repositório em memória.
+    /// </summary>
     public class RepositorioCliente : IRepositorioCliente
     {
         private static readonly ConcurrentDictionary<Guid, Cliente> _store = new();
