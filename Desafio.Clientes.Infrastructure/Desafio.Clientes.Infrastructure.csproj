@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Desafio.Clientes.Application\Desafio.Clientes.Application.csproj" />
     <ProjectReference Include="..\Desafio.Clientes.Domain\Desafio.Clientes.Domain.csproj" />
   </ItemGroup>
 
