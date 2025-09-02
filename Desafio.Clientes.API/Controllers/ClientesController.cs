@@ -1,8 +1,10 @@
-﻿using Desafio.Clientes.Application.Comandos.CriarCliente;
-using Desafio.Clientes.Application.Consultas.ObterClientePorId;
-using Desafio.Clientes.Domain.Excecoes;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Desafio.Clientes.Application.Comandos.CriarCliente;
+using Desafio.Clientes.Application.Consultas.ObterClientePorId;
+using Desafio.Clientes.Application.DTOs;
 
 namespace Desafio.Clientes.API.Controllers
 {
@@ -20,17 +22,10 @@ namespace Desafio.Clientes.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Criar([FromBody] RequisicaoCriarCliente request)
         {
-            try
-            {
-                var id = await _mediator.Send(new CriarClienteCommand(request.NomeFantasia, request.Cnpj));
-                var clienteDto = await _mediator.Send(new ObterClientePorIdConsulta(id));
+            var id = await _mediator.Send(new CriarClienteCommand(request.NomeFantasia, request.Cnpj));
+            var clienteDto = await _mediator.Send(new ObterClientePorIdConsulta(id));
 
-                return CreatedAtAction(nameof(ObterPorId), new { id = clienteDto!.Id }, clienteDto);
-            }
-            catch (ExcecaoDominio ex)
-            {
-                return BadRequest(new { mensagem = ex.Message });
-            }
+            return CreatedAtAction(nameof(ObterPorId), new { id = clienteDto!.Id }, clienteDto);
         }
 
         [HttpGet("{id:guid}")]
