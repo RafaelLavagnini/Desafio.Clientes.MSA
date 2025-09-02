@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Desafio.Clientes.Domain.Exceptions
+namespace Desafio.Clientes.Domain.Excecoes
 {
     public class ExcecaoDominio : Exception
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Desafio.Clientes.Domain.Exceptions;
+using Desafio.Clientes.Domain.Excecoes;
 
-namespace Desafio.Clientes.Domain.ValueObjects
+namespace Desafio.Clientes.Domain.ObjetosDeValor
 {
     public sealed class Cnpj : IEquatable<Cnpj>
     {

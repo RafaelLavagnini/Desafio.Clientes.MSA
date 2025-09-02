@@ -1,6 +1,6 @@
 ﻿using Desafio.Clientes.Application.Interfaces;
 using Desafio.Clientes.Application.DTOs;
-using Desafio.Clientes.Domain.Entities;
+using Desafio.Clientes.Domain.Entidades;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

@@ -1,8 +1,8 @@
 ﻿using System;
-using Desafio.Clientes.Domain.ValueObjects;
-using Desafio.Clientes.Domain.Exceptions;
+using Desafio.Clientes.Domain.ObjetosDeValor;
+using Desafio.Clientes.Domain.Excecoes;
 
-namespace Desafio.Clientes.Domain.Entities
+namespace Desafio.Clientes.Domain.Entidades
 {
     public class Cliente
     {

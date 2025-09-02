@@ -1,4 +1,4 @@
-﻿using Desafio.Clientes.Domain.Entities;
+﻿using Desafio.Clientes.Domain.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
