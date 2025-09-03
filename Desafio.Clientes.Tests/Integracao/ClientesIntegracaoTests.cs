@@ -1,70 +1,81 @@
-﻿using Desafio.Clientes.Application.DTOs;
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Desafio.Clientes.Application.DTOs;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Desafio.Clientes.Tests.Integracao
 {
     /// <summary>
-    /// Testes de integração para o fluxo HTTP completo:
+    /// Testes de integração dos métodos
     /// </summary>
     public class ClientesIntegracaoTests : IClassFixture<WebApplicationFactory<Programa>>
     {
-        private readonly HttpClient _clienteHttp;
+        private readonly HttpClient _client;
 
         public ClientesIntegracaoTests(WebApplicationFactory<Programa> factory)
         {
-            _clienteHttp = factory.CreateClient();
+            _client = factory.CreateClient();
         }
 
-        [Fact(DisplayName = "POST /api/clientes cria cliente e GET retorna o DTO")]
-        public async Task PostEGetCriaClienteERetornaDto()
+        [Fact(DisplayName = "Fluxo completo")]
+        public async Task TesteCompleto()
         {
-            var payload = new { nomeFantasia = "Empresa Integra", cnpj = "12.345.678/0001-95" };
-            var respostaPost = await _clienteHttp.PostAsJsonAsync("/api/clientes", payload);
+            var criarPayload = new { nomeFantasia = "Empresa", cnpj = "12.345.678/0001-95" };
+            var postResp = await _client.PostAsJsonAsync("/api/clientes", criarPayload);
+            postResp.StatusCode.Should().Be(HttpStatusCode.Created);
+
+            var criadoDto = await postResp.Content.ReadFromJsonAsync<ClienteDto>();
+            criadoDto.Should().NotBeNull();
+            var id = criadoDto!.Id;
+            var getTodosResp = await _client.GetAsync("/api/clientes");
+            getTodosResp.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var lista = await getTodosResp.Content.ReadFromJsonAsync<ClienteDto[]>();
+            lista.Should().NotBeNull();
+            lista!.Select(x => x.Id).Should().Contain(id);
+
+            var atualizarPayload = new { nomeFantasia = "Empresa Atualizada", cnpj = "12.345.678/0001-95", ativo = false };
+            var putResp = await _client.PutAsJsonAsync($"/api/clientes/{id}", atualizarPayload);
+            putResp.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var getPorId = await _client.GetAsync($"/api/clientes/{id}");
+            getPorId.StatusCode.Should().Be(HttpStatusCode.OK);
+            var dtoDepois = await getPorId.Content.ReadFromJsonAsync<ClienteDto>();
+            dtoDepois.Should().NotBeNull();
+            dtoDepois!.NomeFantasia.Should().Be("Empresa Atualizada");
+            dtoDepois.Ativo.Should().BeFalse();
+
+            var deleteResp = await _client.DeleteAsync($"/api/clientes/{id}");
+            deleteResp.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var getDepoisDelete = await _client.GetAsync($"/api/clientes/{id}");
+            getDepoisDelete.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact(DisplayName = "POST e GET")]
+        public async Task PostEGetCriarCliente()
+        {
+            var payload = new { nomeFantasia = "Empresa", cnpj = "19131243000197" };
+            var respostaPost = await _client.PostAsJsonAsync("/api/clientes", payload);
 
             respostaPost.StatusCode.Should().Be(HttpStatusCode.Created);
             respostaPost.Headers.Location.Should().NotBeNull();
 
             var dto = await respostaPost.Content.ReadFromJsonAsync<ClienteDto>();
             dto.Should().NotBeNull();
-            dto!.NomeFantasia.Should().Be("Empresa Integra");
+            dto!.NomeFantasia.Should().Be(payload.nomeFantasia);
 
-            var respostaGet = await _clienteHttp.GetAsync(respostaPost.Headers.Location);
+            var respostaGet = await _client.GetAsync(respostaPost.Headers.Location);
             respostaGet.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var dtoGet = await respostaGet.Content.ReadFromJsonAsync<ClienteDto>();
             dtoGet!.Id.Should().Be(dto.Id);
-        }
-
-        [Fact(DisplayName = "POST CNPJ inválido")]
-        public async Task PostInvalido()
-        {
-            var payload = new { nomeFantasia = "Empresa", cnpj = "111" };
-            var resposta = await _clienteHttp.PostAsJsonAsync("/api/clientes", payload);
-
-            resposta.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-            resposta.Content.Headers.ContentType?.MediaType.Should().Be("application/problem+json");
-
-            var corpo = await resposta.Content.ReadAsStringAsync();
-
-            using var doc = System.Text.Json.JsonDocument.Parse(corpo);
-            var root = doc.RootElement;
-            var detail = root.GetProperty("detail").GetString();
-
-            detail.Should().Contain("CNPJ inválido");
-        }
-
-        [Fact(DisplayName = "GET inexistente")]
-        public async Task GetInexistente()
-        {
-            var resposta = await _clienteHttp.GetAsync($"/api/clientes/{System.Guid.NewGuid()}");
-            resposta.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
     }
 }

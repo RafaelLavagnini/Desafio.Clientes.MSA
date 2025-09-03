@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace Desafio.Clientes.Tests.Applicacao
 {
+    /// <summary>
+    /// Testes unitários para o ObterClientePorIdHandler.
+    /// </summary>
     public class ObterClientePorIdTests
     {
         [Fact(DisplayName = "Retornar ClienteDto")]
