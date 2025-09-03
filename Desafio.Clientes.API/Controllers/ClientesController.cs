@@ -1,10 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using Desafio.Clientes.Application.Comandos.AtualizarCliente;
+using Desafio.Clientes.Application.Comandos.CriarCliente;
+using Desafio.Clientes.Application.Comandos.ExcluirCliente;
+using Desafio.Clientes.Application.Consultas.ObterClientePorId;
+using Desafio.Clientes.Application.Consultas.ObterTodosClientes;
+using Desafio.Clientes.API.Models;
+using Desafio.Clientes.Application.DTOs;
+using Desafio.Clientes.Domain.Excecoes;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Desafio.Clientes.Application.Comandos.CriarCliente;
-using Desafio.Clientes.Application.Consultas.ObterClientePorId;
-using Desafio.Clientes.Application.DTOs;
+using System;
+using System.Threading.Tasks;
 
 namespace Desafio.Clientes.API.Controllers
 {
@@ -35,11 +40,45 @@ namespace Desafio.Clientes.API.Controllers
             if (cliente == null) return NotFound();
             return Ok(cliente);
         }
-    }
 
-    public class RequisicaoCriarCliente
-    {
-        public string NomeFantasia { get; set; } = default!;
-        public string Cnpj { get; set; } = default!;
+        [HttpGet]
+        public async Task<IActionResult> ObterTodos()
+        {
+            var clientes = await _mediator.Send(new ObterTodosClientesQuery());
+            return Ok(clientes);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Excluir(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new ExcluirClienteCommand(id));
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] RequisicaoAtualizarCliente request)
+        {
+            try
+            {
+                await _mediator.Send(new AtualizarClienteCommand(id, request.NomeFantasia, request.Cnpj, request.Ativo));
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ExcecaoDominio ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
+            }
+        }
+
     }
 }

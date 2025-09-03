@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<IRepositorioCliente, RepositorioCliente>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CriarClienteHandler).Assembly));
 builder.Services.AddValidatorsFromAssembly(typeof(CriarClienteCommandValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(CriarClienteCommandValidator).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddEndpointsApiExplorer();

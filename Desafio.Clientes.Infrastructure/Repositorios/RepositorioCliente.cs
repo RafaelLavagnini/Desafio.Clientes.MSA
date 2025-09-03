@@ -36,5 +36,26 @@ namespace Desafio.Clientes.Infrastructure.Repositorios
             var existe = _store.Values.Any(c => c.Cnpj.ToString() == cnpj);
             return Task.FromResult(existe);
         }
+        public Task<List<Cliente>> ObterTodosAsync()
+        {
+            var clientes = _store.Values.ToList();
+            return Task.FromResult(clientes);
+        }
+
+        public Task ExcluirAsync(Guid id)
+        {
+            _store.TryRemove(id, out _);
+            return Task.CompletedTask;
+        }
+
+        public Task AtualizarAsync(Cliente cliente)
+        {
+            if (!_store.ContainsKey(cliente.Id))
+                throw new KeyNotFoundException("Cliente não encontrado.");
+
+            _store[cliente.Id] = cliente;
+            return Task.CompletedTask;
+        }
+
     }
 }
